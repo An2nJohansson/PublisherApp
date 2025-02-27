@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PubAPI;
 using PublisherData;
+using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,7 +12,12 @@ builder.Services.AddDbContext<PubContext>(
     opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("PubConnection"))
     .EnableSensitiveDataLogging()
     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
-    
+
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 
 var app = builder.Build();
 
